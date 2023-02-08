@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"k8s.io/cri-api/pkg/apis/runtime/v1alpha2"
-	"log"
+	"k8s.io/klog/v2"
 	"time"
 )
 
@@ -20,7 +20,8 @@ var versionCmd= &cobra.Command{
 
 		rsp, err := runtimeService.Version(ctx,req)
 		if err != nil {
-			log.Fatalln(err)
+			klog.Error(err)
+			return
 		}
 		fmt.Println("Version:", rsp.Version)
 		fmt.Println("RuntimeName:", rsp.RuntimeName)

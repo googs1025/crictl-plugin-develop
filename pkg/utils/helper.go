@@ -4,32 +4,37 @@ import (
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"k8s.io/klog/v2"
 	"os"
 )
 
-//从文件中读取内容  并反序列为 struct
+// YamlFile2Struct 读取文件内容 且反序列为struct
 func YamlFile2Struct(path string,obj interface{}) error{
-	b,err:=GetFileContent(path)
-	if err!=nil{
+	b, err := GetFileContent(path)
+	if err != nil {
+		klog.Error("开启文件错误：", err)
 		return err
 	}
-	err=yaml.Unmarshal(b,obj)
-	if err!=nil{
+	err = yaml.Unmarshal(b, obj)
+	if err != nil {
+		klog.Error("解析yaml文件错误：", err)
 		return err
 	}
 	return nil
 }
-//单独封装的 文件读取函数
+
+
+// GetFileContent 文件读取函数
 func GetFileContent(path string) ([]byte,error){
-	f,err:=os.Open(path)
-	if err!=nil{
-		return nil,err
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
 	}
-	b,err:=ioutil.ReadAll(f)
-	if err!=nil{
-		return nil,err
+	b, err := ioutil.ReadAll(f)
+	if err != nil {
+		return nil, err
 	}
-	return b,nil
+	return b, nil
 }
 
 // item is in []string{}
@@ -41,7 +46,8 @@ func InArray(arr []string,item string ) bool  {
 	}
 	return false
 }
-//设置table的样式，不重要 。看看就好
+
+// SetTable 设置table的样式
 func SetTable(table *tablewriter.Table){
 	table.SetAutoWrapText(false)
 	table.SetAutoFormatHeaders(true)

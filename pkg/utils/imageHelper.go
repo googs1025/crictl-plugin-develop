@@ -7,10 +7,9 @@ import (
 
 const noneString="<none>"
 
-//解析repo和digest
-//格式类似[docker.io/library/alpine@sha256:xxxxoooo]  一坨内容。很长 .
-//这货色是一个数组。解析的时候取第一个即可
-//返回两个值：第一个是imageName 第二个是 digest
+// 解析repo和digest
+// 格式类似[docker.io/library/alpine@sha256:xxxxoooo]
+// 返回两个值：第一个是imageName 第二个是 digest
 func ParseRepoDigest(repoDigests []string) (string, string) {
 	if len(repoDigests) == 0 {
 		return noneString, noneString
@@ -51,8 +50,14 @@ func ParseRepoTag(repoTags []string, imageName string) (repoTagPairs [][]string)
 func ParseSize(size uint64) string{
 	return fmt.Sprintf("%.2fm",float64(size)/1024/1024) //单位是 m
 }
+
 // 截取ID  （13位)
 func ParseImageID(id string) string  {
 	idstr:=strings.Split(id,":")[1]
 	return idstr[:13]
+}
+
+
+func ParseContainerID(id string) string {
+	return id[:13]
 }

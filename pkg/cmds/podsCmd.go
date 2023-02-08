@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"k8s.io/cri-api/pkg/apis/runtime/v1alpha2"
-	"log"
+	"k8s.io/klog/v2"
 	"time"
 )
 
@@ -15,27 +15,29 @@ import (
 var podsCmd = &cobra.Command{
 	Use:          "runp",  //单创建 pod
 	Run: func(c *cobra.Command, args []string) {
-		if len(args)==0{
-			log.Fatalln("请指定POD配置文件")
+		if len(args) == 0 {
+			klog.Error("请指定POD配置文件")
+			return
 		}
-		config:=&v1alpha2.PodSandboxConfig{}
-		err:=utils.YamlFile2Struct(args[0],config)
-		if err!=nil{
-			log.Fatalln(err)
+		config := &v1alpha2.PodSandboxConfig{}
+		err := utils.YamlFile2Struct(args[0], config)
+		if err != nil {
+			klog.Error(err)
+			return
 		}
-		ctx, cancel := context.WithTimeout(context.Background(),time.Second*20)
+
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*20)
 		defer cancel()
 
-		req:=&v1alpha2.RunPodSandboxRequest{Config: config}
-		rsp,err:=NewRuntimeService().RunPodSandbox(ctx,req)
-		if err!=nil{
-			log.Fatalln(err)
+		req := &v1alpha2.RunPodSandboxRequest{
+			Config: config,
+		}
+		rsp, err := NewRuntimeService().RunPodSandbox(ctx, req)
+		if err != nil {
+			klog.Error(err)
+			return
 		}
 		fmt.Println(rsp.PodSandboxId)
-
-
-
 	},
 
 }
-//本课程来自 程序员在囧途(www.jtthink.com) 咨询群：98514334
